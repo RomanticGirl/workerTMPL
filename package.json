@@ -28,7 +28,7 @@
   "scripts": {
     "test": "ts-node index.ts"
   },
-  "author": "",
+  "author": "Michele Watanabe",
   "license": "ISC",
-  "description": ""
+  "description": "worker template"
 }
