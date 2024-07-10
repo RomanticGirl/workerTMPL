@@ -8,7 +8,7 @@ export const transliterate = function (word: string) {
         'щ': 'shch', 'ы': 'y', 'э': 'e', 'ю': 'u', 'я': 'ya', " ": "_", "-": "_"
     }
 
-    word = word.toLowerCase().split("").map((char) => keys[char] || char).join("");
+    return word = word.toLowerCase().split("").map((char) => keys[char] || char).join("");
 }
 
 

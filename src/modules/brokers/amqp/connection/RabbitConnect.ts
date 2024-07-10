@@ -1,13 +1,14 @@
 import { connect, Connection, Channel } from 'amqplib';
-
+import dotenv from 'dotenv';
 export class RabbitConnect {
     private _uri: string;
     private _connection!: Connection;
     private _chanel!: Channel;
     constructor() {
-        this._uri = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}` || 'amqp://localhost';
+        this._uri = 'amqp://localhost';
     }
     protected async connect() {
+        dotenv.config();
         this._connection = await connect(this._uri);
         this._chanel = await this._connection.createChannel();
     }

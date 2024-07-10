@@ -1,4 +1,4 @@
-let PIN_REC_default = {
+export let PIN_REC_default = {
   RES_CODE: null,
   PIN: null,
   PIN_PR: null,
@@ -26,7 +26,7 @@ let PIN_REC_default = {
   CHARGE_SUM: null,
 };
 
-let PIN_REC_fields_default = {
+export let PIN_REC_fields_default: any = {
   MC: {
     MC_ACC: null,
     MC_CODE: null,
@@ -67,7 +67,7 @@ let PIN_REC_fields_default = {
   },
 };
 
-var PIN_REC_buffer_default = {
+export var PIN_REC_buffer_default = {
   PIN_REC: [],
   MC: [],
   RENT: [],
@@ -76,7 +76,7 @@ var PIN_REC_buffer_default = {
   RSO: [],
 };
 
-var PIN_REC_error_buffer_default = {
+export var PIN_REC_error_buffer_default = {
   PIN_REC: [],
   MC: [],
   RENT: [],
@@ -86,12 +86,4 @@ var PIN_REC_error_buffer_default = {
 };
 
 
-const bulkInsertStep = 1000;
-
-module.exports = {
-  PIN_REC_default,
-  PIN_REC_fields_default,
-  PIN_REC_buffer_default,
-  PIN_REC_error_buffer_default,
-  bulkInsertStep
-}
+export const bulkInsertStep = 1000;

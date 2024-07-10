@@ -10,4 +10,5 @@ async function compileModules(modules: Modules) {
     modules.parsers = parsers;
 }
 
+
 export default compileModules;

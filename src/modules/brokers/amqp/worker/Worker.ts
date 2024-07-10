@@ -25,8 +25,10 @@ export abstract class Worker<M extends MainMessage> extends RabbitConnect {
     }
     public async subscribe() {
         await this.connect();
-        this.chanel.consume(this._active,
-            () => this.checkMessage.bind(this));
+        this.chanel.consume(
+            this._active,
+            this.checkMessage.bind(this)
+        )
     }
 
     // Метод проверки для сообщений у которых превышен лимит повторов
@@ -39,7 +41,7 @@ export abstract class Worker<M extends MainMessage> extends RabbitConnect {
         }
         this._currentMessage = mainMessage;
         // Если количество попыток не превышено вызываем метод с бизнес логикой
-        await this.handler(mainMessage.msg || mainMessage);
+        await this.handler(mainMessage);
     }
     // Метод отправки сообщения в хранилище ошибок
     protected async sendToErrorStorage(error: string) {
@@ -70,5 +72,5 @@ export abstract class Worker<M extends MainMessage> extends RabbitConnect {
     protected async ack() {
         return this.chanel.ack(this._currentConsumeMessage);
     }
-    protected abstract handler(message: M): void;
+    protected abstract handler(message: Message<M>): void;
 }

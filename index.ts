@@ -3,12 +3,9 @@ import compileModules from './src/modules';
 import dotenv from 'dotenv';
 
 
-
 declare global {
     var app: Module;
 }
-
-
 globalThis.app = {} as Module;
 
 class MicroService {
@@ -16,26 +13,30 @@ class MicroService {
     constructor(app: Module) {
         this.app = app;
         app.modules = {} as Modules;
+        app.messages = [];
     }
+
     async run() {
         dotenv.config();
         // run server
         console.log("running server")
         // add modules
         await this.readModules();
+        await this.app.modules.dbs._pgpool.connect();
+        // Получение данных о парсере и файле из сообщений
+        global.app.messages
+        
+        await this.app.modules.parsers.parseGarZIP!("files");
+
     }
-
-
 
     async readModules() {
         console.log("reading modules")
-
         compileModules(this.app.modules);
-
-        // const pool = (await this.app.modules.dbs.PostgreSQLConnection()).db_bulk_insert("testWorkerTMPL", [""], [[""]]);
-        this.app.modules.brokers.MainRabbitWorker();
     }
 }
 
-
-new MicroService(app).run();
+(async () => {
+    const service = new MicroService(app)
+    await service.run();
+})();
