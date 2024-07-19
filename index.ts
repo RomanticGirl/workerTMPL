@@ -25,8 +25,7 @@ class MicroService {
         await this.app.modules.dbs._pgpool.connect();
         // Получение данных о парсере и файле из сообщений
         global.app.messages
-        
-        await this.app.modules.parsers.parseGarZIP!("files");
+        await this.app.modules.parsers.parser_csv!("files");
 
     }
 

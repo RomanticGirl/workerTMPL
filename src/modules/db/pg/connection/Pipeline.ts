@@ -1,6 +1,6 @@
-import { Pool, PoolConfig } from "pg";
+import { Pool } from "pg";
 
-export class PoolPipeline<P extends PoolConfig> extends Pool {
+export class PoolPipeline extends Pool {
 
     public async db_insert(table_name: string, data: any, schema = "public") {
         await this.connect();

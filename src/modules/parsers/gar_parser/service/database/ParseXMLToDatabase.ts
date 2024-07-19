@@ -8,12 +8,6 @@ import { pipeline } from 'node:stream/promises';
 
 import xml2js from 'xml2js';
 
-
-
-
-
-
-
 async function parseXMLToDatabase(xmlFile: any, xmlNameWithDate: string) {
     dotenv.config();
     const tagsToHandle = ["OBJECT", "ITEM", "PARAM", "APARTMENT", "CARPLACE", "HOUSE", "NORMDOC", "ROOM", "STEAD", "OBJECTLEVEL",
@@ -25,6 +19,7 @@ async function parseXMLToDatabase(xmlFile: any, xmlNameWithDate: string) {
 
     console.log(`Start parse  xml ${xmlNameWithDate} to database`);
     const xmlPath = path.join("public/resources/gar-zip/extracted", xmlFile.name);
+    
     const xmlFileStream = fs.createReadStream(xmlPath);
     // const xmlStreamParser = new xmlStream(xmlFileStream);
 

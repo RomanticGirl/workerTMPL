@@ -1,8 +1,7 @@
-import { Pool, PoolConfig } from "pg";
+import { PoolConfig } from "pg";
 import { PoolPipeline } from "./connection/Pipeline";
 import { IPoolPipeline } from "./pg.interface";
 import dotenv from "dotenv"
-import { Pipeline } from "../../brokers/amqp/connection/Pipeline";
 
 export function PostgreSQLConnection(): IPoolPipeline {
     dotenv.config();

@@ -12,8 +12,8 @@ export default async function parseGarZIP() {
     const targetFolderName = process.env.TARGET_FOLDER!;
     const outputDir = process.env.OUTPUT_DIR!;
     const expNameWithDate = new RegExp(process.env.XML_NAME_WITH_DATE!);
-
-    // await extractFilesFromZip(zipFilePath, targetFolderName, outputDir);
+    
+    await extractFilesFromZip(zipFilePath, targetFolderName, outputDir);
     try {
         const xmlFiles = await fs.readdir(directoryPath!, { recursive: true, withFileTypes: true });
         const xmlFilePromises = xmlFiles
