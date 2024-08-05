@@ -5,7 +5,7 @@ export class RabbitConnect {
     private _connection!: Connection;
     private _chanel!: Channel;
     constructor() {
-        this._uri = 'amqp://localhost';
+        this._uri = 'amqp://admin:gkhadmin@192.168.43.192:5672' // 'amqp://localhost'; //
     }
     protected async connect() {
         dotenv.config();

@@ -8,7 +8,7 @@ export const createGUTables = async function (table_name: string) {
             GU_VERSION character varying(300) 
         );
     `);
-
+    
     await global.app.modules.dbs._pgpool.query(`TRUNCATE  ${schema}.${table_name} CASCADE`);
 
     await global.app.modules.dbs._pgpool.query(`
@@ -56,7 +56,7 @@ export const createGUTables = async function (table_name: string) {
           UNKNOWN_TAG_JSON character varying(300)
         );
     `);
-
+    
     await global.app.modules.dbs._pgpool.query(`
         CREATE TABLE IF NOT EXISTS ${schema}.${table_name}$MC (
             id integer NOT NULL,

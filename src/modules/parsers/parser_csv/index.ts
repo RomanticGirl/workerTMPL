@@ -41,6 +41,5 @@ export default async function parser_csv(directory_path: string = "files") {
     const fileNames = await fs.promises.readdir(normalizedPath);
     for (let file of fileNames) {
         await parseCsv(`${normalizedPath}/${file}`)
-
     }
 }

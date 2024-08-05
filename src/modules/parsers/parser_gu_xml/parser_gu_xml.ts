@@ -22,7 +22,6 @@ const parseGUXml = async function (file_path: string) {
     console.log(`Обработка файла ${file_name}`);
 
     // Посылаем сообщение на валидатор с названием созданной таблицы
-    global.app.modules.brokers.rabbitParserWorker.sendToValidator(table_name);
 
     await createGUTables(table_name);
 
@@ -43,7 +42,6 @@ const parseGUXml = async function (file_path: string) {
         GU_PERIOD: jsonObj[gu_type]["@_PERIOD"],
         GU_VERSION: jsonObj[gu_type]["@_xmlns:ns0"].split("/").pop(),
     });
-
     // Проходим по элементам PIN_REC
     for (const PIN_REC_ITEM of jsonObj[gu_type]["PIN_REC"]) {
         id++;
@@ -110,6 +108,7 @@ const parseGUXml = async function (file_path: string) {
         PIN_REC_buffer["PIN_REC"].push(PIN_REC);
         // console.log(PIN_REC_buffer["PIN_REC"].length);
         if (id % bulkInsertStep == 0) {
+
             await insert(table_name, PIN_REC_buffer, PIN_REC_error_buffer);
             ({ PIN_REC_buffer, PIN_REC_error_buffer } = resetBuffers());
             console.log(`Обработка файла ${file_name}. Сохранено ${id} записей`);
@@ -156,6 +155,8 @@ const insert = async function (
     for (const key of Object.keys(PIN_REC_buffer)) {
         if (!PIN_REC_buffer[key].length) continue;
         await bulkInsert(`${table_name}$${key}`, PIN_REC_buffer[key], key + "_");
+        global.app.modules.brokers.rabbitParserWorker.sendToValidator(`${table_name}$${key}`);
+
     }
     for (const key of Object.keys(PIN_REC_error_buffer)) {
         if (!PIN_REC_error_buffer[key].length) continue;
@@ -165,6 +166,7 @@ const insert = async function (
             PIN_REC_error_buffer[key],
             key + "_"
         );
+        global.app.modules.brokers.rabbitParserWorker.sendToValidator(`${table_name}$${key}_error`);
     }
 };
 
@@ -179,6 +181,6 @@ export default async function parseGUXmlDirectory(directory_path?: string) {
     const normalizedPath = require("path").join(__dirname, directory_path);
     const fileNames = await fs.promises.readdir(normalizedPath);
     for (let file of fileNames) {
-        parseGUXml(`${normalizedPath}/${file}`);
+        await parseGUXml(`${normalizedPath}/${file}`);
     }
 };

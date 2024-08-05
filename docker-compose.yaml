@@ -1,0 +1,16 @@
+version: "3.8"
+
+
+services:
+  frontend:
+    container_name: worker-parser
+    build:
+      context: .
+      dockerfile: DockerFile
+    ports:
+      - "6666:6666"
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    networks:
+      - default

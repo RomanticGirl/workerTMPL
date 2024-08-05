@@ -12,6 +12,7 @@ export interface ParserModules {
     parseXlsxDirectory?: (key?: string) => Promise<void>;
     parseGUXmlDirectory?: (key?: string) => Promise<void>;
     parseGarZIP?: (key?: string) => Promise<void>;
+    parseContentLoaderDirectory?: (key?: string) => Promise<void>;
 }
 
 export interface DbModules extends Pool {

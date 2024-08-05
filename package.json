@@ -18,10 +18,11 @@
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
-    "fast-xml-parser": "^4.4.0",
+    "fast-xml-parser": "^4.4.1",
     "pg": "^8.12.0",
     "pg-copy-streams": "^6.0.6",
     "undici-types": "^5.26.5",
+    "workertmpl": "file:",
     "xml2js": "^0.6.2",
     "yauzl": "^3.1.3"
   },

@@ -12,8 +12,8 @@ export class ParserWorker extends Worker<MainMessage> {
       console.log('Получение сообщения с параметрами для парсеров');
 
       console.log(" [x] Received %s", JSON.stringify(message));
-      
-      global.app.messages.push({...message, executed: false});
+
+      global.app.messages.push({ ...message, executed: false });
       this.ack();
     } catch (error) {
       if (error instanceof Error) {
@@ -45,9 +45,10 @@ export class ParserWorker extends Worker<MainMessage> {
     this.chanel.assertQueue(queue, {
       durable: true
     })
+
     this.chanel.sendToQueue(
       queue,
-      Buffer.from(mesg)
+      Buffer.from(JSON.stringify({ table_name: mesg.toLowerCase() }))
     )
     console.log(" [x] Отправлено сообщение %s в очередь:%s", mesg, queue);
   }
