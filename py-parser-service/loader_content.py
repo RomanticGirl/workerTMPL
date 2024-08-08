@@ -15,9 +15,11 @@ import utils
 
 prefix = set()
 
+f = open('logs.txt','w')  # открытие в режиме записи
 os.chdir("files")
 
 content = os.listdir(".")
+
 
 connection = pika.BlockingConnection(pika.URLParameters(
     "amqp://admin:gkhadmin@192.168.43.192:5672" 
@@ -379,7 +381,7 @@ for file in content:
 print(xml_files)
 
 count_print = 0
-i = 6000
+i = 6040
 
 for file_name in xml_files:
     tree = ET.parse(file_name)
@@ -908,17 +910,16 @@ for file_name in xml_files:
     channel.basic_publish(exchange='',
     routing_key=queue_name,
     body='{"table_name": '  + '"' +  table_name + '"}')
-    file = open('mqLogs.txt')
-    try:
-        file.write('{"table_name": '  + '"' +  table_name + '"} \n')
-    finally:
-        file.close()
+
+    f.write('{"table_name": '  + '"' +  table_name + '"} \n')
+
     print(f"Sent: '{table_name}'")
             
         
 
 
 
+f.close()
 # конечное время
 end_time = time.time()
 connection.close()
