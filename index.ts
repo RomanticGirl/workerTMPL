@@ -1,9 +1,7 @@
 import { Module, Modules } from './src/modules/modules.types';
 import compileModules from './src/modules';
 import dotenv from 'dotenv';
-import { extractFilesFromZipContent } from './src/modules/parsers/gar_parser/utils/unzipper/Unzip';
-
-
+import { extractFilesFromZipContent } from './src/modules/additional/arichivator'
 declare global {
     var app: Module;
 }
@@ -25,9 +23,9 @@ class MicroService {
         await this.readModules();
         await this.app.modules.dbs._pgpool.connect();
         // Получение данных о парсере и файле из сообщений
-        await this.app.modules.parsers.parseGUXmlDirectory!("files");
-
-
+        // await extractFilesFromZipContent()
+        // await this.app.modules.parsers.parseGUXmlDirectory!("files");
+        await this.app.modules.parsers.parseContentLoaderDirectory!("files")
     }
 
     async readModules() {

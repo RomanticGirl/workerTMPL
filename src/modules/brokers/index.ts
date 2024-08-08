@@ -8,7 +8,7 @@ const brokers = {} as WorkerModules;
     const worker = MainRabbitWorker();
     brokers.rabbitParserWorker = worker;
     await pipeline();
-    await Promise.all([worker.testFuncCheckWorker(), worker.subscribe()])
+    await Promise.all([worker.subscribe()])
 })();
 
 export default brokers;

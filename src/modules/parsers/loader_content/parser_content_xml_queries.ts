@@ -265,7 +265,7 @@ export const bulk_insert = async function (table_name: string, isBox: boolean, b
                 if (isBox && key == "code") {
                     break;
                 }
-                var value = buffer_save[j][0][key].replaceAll("'", "")
+                var value = buffer_save[j][0][key].replaceAll("'", "").replaceAll("\\", "\\\\")
                 insert_value += (
                     (value == "NULL" ? "" : "'")
                     + value

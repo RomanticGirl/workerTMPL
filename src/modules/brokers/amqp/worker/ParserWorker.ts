@@ -23,10 +23,10 @@ export class ParserWorker extends Worker<MainMessage> {
     }
   }
 
-  public async testFuncCheckWorker() {
+  // передача названия файла для парсинга в очередь 
+  public async funcCheckWorker(mesg: string) {
     await this.connect();
     const queue = "PARSER_QUEUE"// process.env.PARSER_QUEUE || 'errWorker';
-    const mesg = '{ "parsers" : "parser_csv" }';
 
     this.chanel.assertQueue(queue, {
       durable: true

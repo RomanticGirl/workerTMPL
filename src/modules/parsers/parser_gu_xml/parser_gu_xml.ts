@@ -40,7 +40,7 @@ const parseGUXml = async function (file_path: string) {
     // Сохранение данных о корневом элементе xml
     await insertGUFileData(table_name, {
         GU_PERIOD: jsonObj[gu_type]["@_PERIOD"],
-        GU_VERSION: jsonObj[gu_type]["@_xmlns:ns0"].split("/").pop(),
+        // GU_VERSION: jsonObj[gu_type]["@_xmlns:ns0"].split("/").pop(),
     });
     // Проходим по элементам PIN_REC
     for (const PIN_REC_ITEM of jsonObj[gu_type]["PIN_REC"]) {
@@ -115,6 +115,7 @@ const parseGUXml = async function (file_path: string) {
         }
     }
     await insert(table_name, PIN_REC_buffer, PIN_REC_error_buffer);
+    global.app.modules.brokers.rabbitParserWorker.sendToValidator(`${table_name}`);
     console.log(
         `Обработка файла ${file_name} завершена. Сохранено ${id} записей`
     );
@@ -155,7 +156,6 @@ const insert = async function (
     for (const key of Object.keys(PIN_REC_buffer)) {
         if (!PIN_REC_buffer[key].length) continue;
         await bulkInsert(`${table_name}$${key}`, PIN_REC_buffer[key], key + "_");
-        global.app.modules.brokers.rabbitParserWorker.sendToValidator(`${table_name}$${key}`);
 
     }
     for (const key of Object.keys(PIN_REC_error_buffer)) {
@@ -166,7 +166,6 @@ const insert = async function (
             PIN_REC_error_buffer[key],
             key + "_"
         );
-        global.app.modules.brokers.rabbitParserWorker.sendToValidator(`${table_name}$${key}_error`);
     }
 };
 

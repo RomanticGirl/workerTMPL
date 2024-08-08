@@ -9,7 +9,7 @@ const parseContentLoader = async function (file_path: string) {
         {},
         ["ExportAccrualsPaymentsPackage", "version", "create-date"],
     ]
-    var buffer_house = [
+    var buffer_house: any = [
         {},
         [
             "house",
@@ -308,7 +308,7 @@ const parseContentLoader = async function (file_path: string) {
     let file_name = file_path.split("/").pop()?.slice(0, -4);
 
 
-    var table_name = file_name + "$" + start_time
+    var table_name = "content" + "$" + start_time
     table_name = table_name.replaceAll("-", "_")
 
     // await create_table(table_name)
@@ -334,8 +334,6 @@ const parseContentLoader = async function (file_path: string) {
         parseAttributeValue: true
     };
 
-
-
     const parser = new XMLParser(options);
 
     let jsonObj = parser.parse(xml);
@@ -350,199 +348,229 @@ const parseContentLoader = async function (file_path: string) {
 
     var flag_create_table = true
 
-    for (var elem of jsonObj) {
-        
+
+    buffer_PaymentsPackage.push([{
+        "ExportAccrualsPaymentsPackage": null,
+        "version": jsonObj["ExportAccrualsPaymentsPackage"]["version"],
+        "create-date": jsonObj["ExportAccrualsPaymentsPackage"]["create-date"]
+    }])
+    // var group_tag = current_tag
+    // var buffer_id = ""
+    // var buffer_root_id = ""
+    // var buffer_rate_id = ""
+    // var buffer_root_standard_id = ""
+    // var buffer_standard_id = ""
+    // var buffer_row: any = {}
+    // var buffer_nsi_row: any = {}
+
+    for (var elem of jsonObj["ExportAccrualsPaymentsPackage"]["house"]) {
+        console.log(elem)
+
+
+        buffer_house.push([{
+            'house': null,
+            'fias-house-code': elem.fias_house_code,
+            'original-fias-house-code': elem.original_fias_house_code,
+            'hm-house-guid': elem["hm-house-guid"],
+            'address-string': elem['address-string'],
+            
+        }])
+
+
+
+
+
+        buffer_communal_rate_consumption
+        buffer_communal_rate_criterion
+        buffer_nsi_communal
+        buffer_standard
+        buffer_standard_rate
+        buffer_unified_account
+        buffer_nsi_unified_account
+        buffer_payment_unified_account
+        buffer_payment_service
+        buffer_provider_service
+
+
+
+        // current_tag = elem
+        // if (current_tag == "house" && group_tag! != "house") {
+        //     group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
+        //     buffer_row = {}
+        //     buffer_nsi_row = {}
+        // }
+        // else if (current_tag == "communal-rate-consumption") {
+        //     if (group_tag! != "communal-rate-consumption") {
+        //         group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
+        //         buffer_id = buffer_row["fias-house-code"]
+        //         if (buffer_row["root_rate_guid"]) {
+        //             buffer_root_id = buffer_row["root_rate_guid"]
+        //             buffer_rate_id = buffer_row["rate_guid"]
+        //         }
+        //         buffer_row = {}
+        //         buffer_nsi_row = {}
+        //         var buffer_criterion_row: any = {}
+        //     }
+        //     if (buffer_row) {
+        //         buffer_communal_rate_consumption.push([buffer_row])
+        //         buffer_nsi_communal.push([buffer_nsi_row])
+        //         buffer_communal_rate_criterion.push([buffer_criterion_row])
+        //     }
+        //     buffer_row = {}
+        //     buffer_row["jkh-house-code"] = buffer_id!
+        //     buffer_nsi_row = {}
+        //     buffer_nsi_row["jkh-house-code"] = buffer_id!
+        //     buffer_criterion_row = {}
+        //     buffer_criterion_row["root_rate_guid"] = buffer_root_id!
+        //     buffer_criterion_row["rate_guid"] = buffer_rate_id!
+        // }
+        // else if (current_tag == "standard") {
+        //     if (group_tag! != "standard") {
+        //         group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
+        //         if (buffer_row.get("root_standard_guid")) {
+        //             buffer_root_standard_id = buffer_row["root_standard_guid"]
+        //             buffer_standard_id = buffer_row["standard_guid"]
+        //         }
+        //         buffer_row = {}
+        //         var buffer_rate_row: any = {}
+        //     }
+        //     if (buffer_row) {
+        //         buffer_standard.push([buffer_row])
+        //         buffer_standard_rate.push([buffer_rate_row!])
+        //     }
+        //     buffer_row = {}
+        //     buffer_row["jkh-house-code"] = buffer_id!
+        //     buffer_rate_row = {}
+        //     buffer_rate_row["jkh-house-code"] = buffer_id!
+        //     buffer_rate_row["root_standard_guid"] = buffer_root_standard_id!
+        //     buffer_rate_row["standard_guid"] = buffer_standard_id!
+        // }
+        // else if (current_tag == "unified-account") {
+        //     if (group_tag! != "unified-account") {
+        //         group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
+        //         buffer_row = {}
+        //         buffer_nsi_row = {}
+        //         var buffer_payment_row: any = {}
+        //         var buffer_service_row: any = {}
+        //         var buffer_provider_row: any = {}
+        //     }
+        //     if (buffer_row) {
+        //         buffer_unified_account.push([buffer_row])
+        //         buffer_nsi_unified_account.push([buffer_nsi_row!])
+        //         buffer_payment_unified_account.push([buffer_payment_row!])
+        //         buffer_payment_service.push([buffer_service_row!])
+        //         buffer_provider_service.push([buffer_provider_row!])
+        //     }
+        //     buffer_row = {}
+        //     buffer_row["jkh-house-code"] = buffer_id!
+        //     buffer_nsi_row = {}
+        //     buffer_nsi_row["jkh-house-code"] = buffer_id!
+        //     buffer_payment_row = {}
+        //     buffer_payment_row["jkh-house-code"] = buffer_id!
+        //     buffer_service_row = {}
+        //     buffer_service_row["jkh-house-code"] = buffer_id!
+        //     buffer_provider_row = {}
+        //     buffer_provider_row["jkh-house-code"] = buffer_id!
+        // }
+        // if (group_tag! == "ExportAccrualsPaymentsPackage") {
+        //     if (buffer_PaymentsPackage[1].indexOf(group_tag) != -1)
+        //         buffer_row[current_tag] = jsonObj["ExportAccrualsPaymentsPackage"][elem]
+        //     else
+        //         buffer_PaymentsPackage[0] = { current_tag: elem }
+        // }
+        // else if (group_tag! == "house") {
+        //     if (buffer_house[1].indexOf(current_tag) != -1) {
+        //         if (buffer_nsi_house[0].indexOf(current_tag) != -1) {
+        //             if (
+        //                 buffer_id! != ""
+        //                 && buffer_nsi_row["jkh-house-code"] != buffer_id!
+        //             ) {
+        //                 buffer_nsi_row["jkh-house-code"] = buffer_id!
+        //                 for (let buffer = 0; buffer < buffer_nsi_house[1].length; buffer++) {
+        //                     buffer_nsi_house[1][buffer]["jkh-house-code"] = buffer_nsi_house[1][buffer]["jkh-house-code"]
+        //                 }
+        //             }
+        //             buffer_nsi_row["link_name"] = nsi_tag!
+        //             buffer_nsi_row[current_tag] = jsonObj["ExportAccrualsPaymentsPackage"][elem]
+        //         }
+        //         else {
+        //             for (var text of jsonObj["ExportAccrualsPaymentsPackage"][elem]) {
+        //                 buffer_row[current_tag] = jsonObj["ExportAccrualsPaymentsPackage"][elem]
+        //                 var nsi_tag = current_tag
+        //             }
+        //         }
+        //     }
+        //     else
+        //         buffer_house[0] = { current_tag: elem }
+        // }
+        // else if (group_tag! == "communal-rate-consumption") {
+        //     if (current_tag in buffer_communal_rate_consumption[1]) {
+        //         if (current_tag in buffer_nsi_communal[0]) {
+        //             buffer_nsi_row["link_name"] = nsi_tag!
+        //             buffer_nsi_row[current_tag] = elem
+        //         }
+        //         else if (current_tag in buffer_communal_rate_criterion[0]) {
+        //             buffer_criterion_row["link_name"] = nsi_tag!
+        //             buffer_criterion_row[current_tag] = elem
+        //         }
+        //         else {
+        //             if (
+        //                 nsi_tag! in ["rate-guid", "component-one", "territory-oktmo"]
+        //                 && current_tag == "name"
+        //             ) {
+        //                 current_tag = nsi_tag! + "_" + current_tag
+        //             }
+        //             buffer_row[current_tag] = elem
+        //             nsi_tag = current_tag
+        //         }
+        //     }
+        //     else
+        //         buffer_communal_rate_consumption[0] = { current_tag: elem }
+        // }
+        // else if (group_tag! == "standard") {
+        //     if (current_tag in buffer_standard[1]) {
+        //         if (current_tag in buffer_standard_rate[0])
+        //             buffer_rate_row[current_tag] = elem
+        //         else {
+        //             buffer_row[current_tag] = elem
+        //             nsi_tag = current_tag
+        //         }
+        //     }
+        //     else
+        //         buffer_standard[0] = { current_tag: elem };
+        // }
+        // else if (group_tag! == "unified-account") {
+        //     if (current_tag in buffer_unified_account[1]) {
+        //         if (current_tag in buffer_payment_unified_account[0]) {
+        //             if (current_tag == "payment-document-guid")
+        //                 var payment_tag = elem
+        //             buffer_payment_row[current_tag] = elem
+        //         }
+        //         else if (current_tag in buffer_nsi_unified_account[0]) {
+        //             buffer_nsi_row["link_name"] = nsi_tag!
+        //             buffer_nsi_row[current_tag] = elem
+        //         }
+        //         else if (current_tag in buffer_payment_service[0]) {
+        //             buffer_service_row["payment-document-guid"] = payment_tag!
+        //             buffer_service_row[current_tag] = elem
+        //         }
+        //         else if (current_tag in buffer_provider_service[0]) {
+        //             buffer_provider_row["payment-document-guid"] = payment_tag!
+        //             buffer_provider_row[current_tag] = elem
+        //         }
+        //         else {
+        //             buffer_row[current_tag] = elem
+        //             nsi_tag = current_tag
+        //         }
+        //     }
+        //     else
+        //         buffer_unified_account[0] = { current_tag: elem };
+        // }
+        // change_group_tag(group_tag!, "", buffer_row!)
     }
 
-    // for (const elem of jsonObj[contentType][iter]) {
-    //     if (current_tag == "ExportAccrualsPaymentsPackage") {
-    //         var group_tag = current_tag
-    //         buffer_id = ""
-    //         var buffer_root_id = ""
-    //         var buffer_rate_id = ""
-    //         var buffer_root_standard_id = ""
-    //         var buffer_standard_id = ""
-    //         var buffer_row: any = {}
-    //         var buffer_nsi_row: any = {}
-    //     }
-    //     else if (current_tag == "house" && group_tag! != "house") {
-    //         group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
-    //         buffer_row = {}
-    //         buffer_nsi_row = {}
-    //     }
-    //     else if (current_tag == "communal-rate-consumption") {
-    //         if (group_tag! != "communal-rate-consumption") {
-    //             group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
-    //             var buffer_id = buffer_row["fias-house-code"]
-    //             if (buffer_row["root_rate_guid"]) {
-    //                 buffer_root_id = buffer_row["root_rate_guid"]
-    //                 buffer_rate_id = buffer_row["rate_guid"]
-    //             }
-    //             buffer_row = {}
-    //             buffer_nsi_row = {}
-    //             var buffer_criterion_row: any = {}
-    //         }
-    //         if (buffer_row) {
-    //             buffer_communal_rate_consumption.push([buffer_row])
-    //             buffer_nsi_communal.push([buffer_nsi_row])
-    //             buffer_communal_rate_criterion.push([buffer_criterion_row])
-    //         }
-    //         buffer_row = {}
-    //         buffer_row["jkh-house-code"] = buffer_id
-    //         buffer_nsi_row = {}
-    //         buffer_nsi_row["jkh-house-code"] = buffer_id
-    //         buffer_criterion_row = {}
-    //         buffer_criterion_row["root_rate_guid"] = buffer_root_id!
-    //         buffer_criterion_row["rate_guid"] = buffer_rate_id!
-    //     }
-    //     else if (current_tag == "standard") {
-    //         if (group_tag! != "standard") {
-    //             group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
-    //             if (buffer_row.get("root_standard_guid")) {
-    //                 buffer_root_standard_id = buffer_row["root_standard_guid"]
-    //                 buffer_standard_id = buffer_row["standard_guid"]
-    //             }
-    //             buffer_row = {}
-    //             var buffer_rate_row: any = {}
-    //         }
-    //         if (buffer_row) {
-    //             buffer_standard.push([buffer_row])
-    //             buffer_standard_rate.push([buffer_rate_row!])
-    //         }
-    //         buffer_row = {}
-    //         buffer_row["jkh-house-code"] = buffer_id
-    //         buffer_rate_row = {}
-    //         buffer_rate_row["jkh-house-code"] = buffer_id
-    //         buffer_rate_row["root_standard_guid"] = buffer_root_standard_id!
-    //         buffer_rate_row["standard_guid"] = buffer_standard_id!
-    //     }
-    //     else if (current_tag == "unified-account") {
-    //         if (group_tag! != "unified-account") {
-    //             group_tag = change_group_tag(group_tag!, current_tag, buffer_row)
-    //             buffer_row = {}
-    //             buffer_nsi_row = {}
-    //             var buffer_payment_row: any = {}
-    //             var buffer_service_row: any = {}
-    //             var buffer_provider_row: any = {}
-    //         }
-    //         if (buffer_row) {
-    //             buffer_unified_account.push([buffer_row])
-    //             buffer_nsi_unified_account.push([buffer_nsi_row!])
-    //             buffer_payment_unified_account.push([buffer_payment_row!])
-    //             buffer_payment_service.push([buffer_service_row!])
-    //             buffer_provider_service.push([buffer_provider_row!])
-    //         }
-    //         buffer_row = {}
-    //         buffer_row["jkh-house-code"] = buffer_id
-    //         buffer_nsi_row = {}
-    //         buffer_nsi_row["jkh-house-code"] = buffer_id
-    //         buffer_payment_row = {}
-    //         buffer_payment_row["jkh-house-code"] = buffer_id
-    //         buffer_service_row = {}
-    //         buffer_service_row["jkh-house-code"] = buffer_id
-    //         buffer_provider_row = {}
-    //         buffer_provider_row["jkh-house-code"] = buffer_id
-    //     }
-    //     // ------------------------------------------------------------------------------------
-    //     if (group_tag! == "ExportAccrualsPaymentsPackage") {
-    //         if (buffer_PaymentsPackage[1].indexOf(group_tag) != -1)
-    //             buffer_row[current_tag] = elem
-    //         else
-    //             buffer_PaymentsPackage[0] = { current_tag: elem }
-    //     }
-    //     else if (group_tag! == "house") {
-    //         if (current_tag in buffer_house[1]) {
-    //             if (current_tag in buffer_nsi_house[0]) {
-    //                 if (
-    //                     buffer_id != ""
-    //                     && buffer_nsi_row.get("jkh-house-code", "") != buffer_id
-    //                 ) {
-    //                     buffer_nsi_row["jkh-house-code"] = buffer_id
-    //                     for (let buffer = 0; buffer < buffer_nsi_house[1].length; buffer++) {
-    //                         buffer_nsi_house[1][buffer]["jkh-house-code"] = (
-    //                             buffer_nsi_house[
-    //                                 1
-    //                             ][buffer].get("jkh-house-code", buffer_id)
-    //                         )
-    //                     }
-    //                 }
-    //                 buffer_nsi_row["link_name"] = nsi_tag!
-    //                 buffer_nsi_row[current_tag] = elem.text
-    //             }
-    //             else {
-    //                 buffer_row[current_tag] = elem.text
-    //                 var nsi_tag = current_tag
-    //             }
-    //         }
-    //         else
-    //             buffer_house[0] = { current_tag: elem.text }
-    //     }
-    //     else if (group_tag! == "communal-rate-consumption") {
-    //         if (current_tag in buffer_communal_rate_consumption[1]) {
-    //             if (current_tag in buffer_nsi_communal[0]) {
-    //                 buffer_nsi_row["link_name"] = nsi_tag!
-    //                 buffer_nsi_row[current_tag] = elem.text
-    //             }
-    //             else if (current_tag in buffer_communal_rate_criterion[0]) {
-    //                 buffer_criterion_row["link_name"] = nsi_tag!
-    //                 buffer_criterion_row[current_tag] = elem.text
-    //             }
-    //             else {
-    //                 if (
-    //                     nsi_tag! in ["rate-guid", "component-one", "territory-oktmo"]
-    //                     && current_tag == "name"
-    //                 ) {
-    //                     current_tag = nsi_tag! + "_" + current_tag
-    //                 }
-    //                 buffer_row[current_tag] = elem.text
-    //                 nsi_tag = current_tag
-    //             }
-    //         }
-    //         else
-    //             buffer_communal_rate_consumption[0] = { current_tag: elem.text }
-    //     }
-    //     else if (group_tag! == "standard") {
-    //         if (current_tag in buffer_standard[1]) {
-    //             if (current_tag in buffer_standard_rate[0])
-    //                 buffer_rate_row[current_tag] = elem.text
-    //             else {
-    //                 buffer_row[current_tag] = elem.text
-    //                 nsi_tag = current_tag
-    //             }
-    //         }
-    //         else
-    //             buffer_standard[0] = { current_tag: elem.text };
-    //     }
-    //     else if (group_tag! == "unified-account") {
-    //         if (current_tag in buffer_unified_account[1]) {
-    //             if (current_tag in buffer_payment_unified_account[0]) {
-    //                 if (current_tag == "payment-document-guid")
-    //                     var payment_tag = elem.text
-    //                 buffer_payment_row[current_tag] = elem.text
-    //             }
-    //             else if (current_tag in buffer_nsi_unified_account[0]) {
-    //                 buffer_nsi_row["link_name"] = nsi_tag!
-    //                 buffer_nsi_row[current_tag] = elem.text
-    //             }
-    //             else if (current_tag in buffer_payment_service[0]) {
-    //                 buffer_service_row["payment-document-guid"] = payment_tag
-    //                 buffer_service_row[current_tag] = elem.text
-    //             }
-    //             else if (current_tag in buffer_provider_service[0]) {
-    //                 buffer_provider_row["payment-document-guid"] = payment_tag
-    //                 buffer_provider_row[current_tag] = elem.text
-    //             }
-    //             else {
-    //                 buffer_row[current_tag] = elem.text
-    //                 nsi_tag = current_tag
-    //             }
-    //         }
-    //         else
-    //             buffer_unified_account[0] = { current_tag: elem.text };
-    //     }
-    // }
 
-    // change_group_tag(group_tag!, "", buffer_row!)
+
 
     if (flag_create_table) {
         flag_create_table = false
