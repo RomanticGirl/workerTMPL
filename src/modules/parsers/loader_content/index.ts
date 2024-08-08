@@ -364,8 +364,8 @@ const parseContentLoader = async function (file_path: string) {
     // var buffer_nsi_row: any = {}
 
     for (var elem of jsonObj["ExportAccrualsPaymentsPackage"]["house"]) {
+        
         console.log(elem)
-
 
         buffer_house.push([{
             'house': null,
@@ -373,7 +373,7 @@ const parseContentLoader = async function (file_path: string) {
             'original-fias-house-code': elem.original_fias_house_code,
             'hm-house-guid': elem["hm-house-guid"],
             'address-string': elem['address-string'],
-            'house-type': elem,
+            'house-type': elem['house-type'],
             'house-condition': elem,
             'house-heating-system-type': elem,
             'hot-water-supply-system-type': elem,

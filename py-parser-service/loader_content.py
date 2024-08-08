@@ -370,7 +370,7 @@ for file in content:
     if (
         os.path.isfile(os.path.join(".", file))
         #        and file == "TEST_content.xml"
-        and file.endswith(".xml") and file == '029078ef-f81c-4d35-b38f-fa44d419fd67.xml'
+        and file.endswith(".xml") # and file == '029078ef-f81c-4d35-b38f-fa44d419fd67.xml'
     ):
         xml_files.append(file)
 
@@ -908,6 +908,11 @@ for file_name in xml_files:
     channel.basic_publish(exchange='',
     routing_key=queue_name,
     body='{"table_name": '  + '"' +  table_name + '"}')
+    file = open('mqLogs.txt')
+    try:
+        file.write('{"table_name": '  + '"' +  table_name + '"} \n')
+    finally:
+        file.close()
     print(f"Sent: '{table_name}'")
             
         
