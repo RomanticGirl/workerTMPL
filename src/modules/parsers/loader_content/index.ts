@@ -373,7 +373,16 @@ const parseContentLoader = async function (file_path: string) {
             'original-fias-house-code': elem.original_fias_house_code,
             'hm-house-guid': elem["hm-house-guid"],
             'address-string': elem['address-string'],
-            
+            'house-type': elem,
+            'house-condition': elem,
+            'house-heating-system-type': elem,
+            'hot-water-supply-system-type': elem,
+            'in-house-engineering-drainage-system': elem,
+            'in-house-engineering-cold-water-supply-system': elem,
+            'in-house-engineering-gas-supply-system': elem,
+            'code': elem,
+            'guid': elem,
+            'value': elem,
         }])
 
 

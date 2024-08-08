@@ -379,7 +379,7 @@ for file in content:
 print(xml_files)
 
 count_print = 0
-i = 5580
+i = 6000
 
 for file_name in xml_files:
     tree = ET.parse(file_name)
@@ -904,7 +904,8 @@ for file_name in xml_files:
         
 
         buffer_provider_service.clear()
-        channel.basic_publish(exchange='',
+        
+    channel.basic_publish(exchange='',
     routing_key=queue_name,
     body='{"table_name": '  + '"' +  table_name + '"}')
     print(f"Sent: '{table_name}'")
