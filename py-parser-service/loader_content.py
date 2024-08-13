@@ -25,9 +25,9 @@ connection = pika.BlockingConnection(pika.URLParameters(
     "amqp://admin:gkhadmin@192.168.43.192:5672" 
 ))
 
-queue_name="prod_data"
-channel = connection.channel()
-channel.queue_declare(queue=queue_name, durable=True)
+# queue_name="prod_data"
+# channel = connection.channel()
+# channel.queue_declare(queue=queue_name, durable=True)
 
 def clear_tag(tag):
     prefix_local = re.match("{.*}", tag)
@@ -329,7 +329,7 @@ def bulk_insert(table_name, isBox, buffer_save, chunk):
                 for key in buffer_save[isBox]:
                     if isBox and key == "code":
                         break
-                    value = str(buffer_save[j][0].get(key, "NULL")).replace("'", "") # .replace("\\", "\\\\")
+                    value = str(buffer_save[j][0].get(key, "NULL")).replace("'", "").replace("\\", "\\\\")
                     insert_value += (
                         ("" if value == "NULL" else "'")
                         + value
@@ -372,7 +372,7 @@ for file in content:
     if (
         os.path.isfile(os.path.join(".", file))
         #        and file == "TEST_content.xml"
-        and file.endswith(".xml") # and file == '029078ef-f81c-4d35-b38f-fa44d419fd67.xml'
+        and file.endswith(".xml") and file == '029078ef-f81c-4d35-b38f-fa44d419fd67.xml'
     ):
         xml_files.append(file)
 
@@ -381,7 +381,7 @@ for file in content:
 print(xml_files)
 
 count_print = 0
-i = 6040
+i = 7000
 
 for file_name in xml_files:
     tree = ET.parse(file_name)
@@ -907,9 +907,9 @@ for file_name in xml_files:
 
         buffer_provider_service.clear()
         
-    channel.basic_publish(exchange='',
-    routing_key=queue_name,
-    body='{"table_name": '  + '"' +  table_name + '"}')
+    # channel.basic_publish(exchange='',
+    # routing_key=queue_name,
+    # body='{"table_name": '  + '"' +  table_name + '"}')
 
     f.write('{"table_name": '  + '"' +  table_name + '"} \n')
 

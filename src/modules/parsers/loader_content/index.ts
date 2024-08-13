@@ -24,9 +24,9 @@ const parseContentLoader = async function (file_path: string) {
             "in-house-engineering-drainage-system",
             "in-house-engineering-cold-water-supply-system",
             "in-house-engineering-gas-supply-system",
-            "code",
-            "guid",
-            "value",
+            // "code",
+            // "guid",
+            // "value",
         ],
     ]
 
@@ -208,7 +208,6 @@ const parseContentLoader = async function (file_path: string) {
             "amount-by-provider",
             "total-amount-debt-advance",
             "total-amount-with-debt-and-advance",
-            "total-amount-with-debt-advance",
         ],
     ]
 
@@ -354,51 +353,206 @@ const parseContentLoader = async function (file_path: string) {
         "version": jsonObj["ExportAccrualsPaymentsPackage"]["version"],
         "create-date": jsonObj["ExportAccrualsPaymentsPackage"]["create-date"]
     }])
-    // var group_tag = current_tag
-    // var buffer_id = ""
-    // var buffer_root_id = ""
-    // var buffer_rate_id = ""
-    // var buffer_root_standard_id = ""
-    // var buffer_standard_id = ""
-    // var buffer_row: any = {}
-    // var buffer_nsi_row: any = {}
 
     for (var elem of jsonObj["ExportAccrualsPaymentsPackage"]["house"]) {
-        
+
         console.log(elem)
 
         buffer_house.push([{
-            'house': null,
-            'fias-house-code': elem.fias_house_code,
-            'original-fias-house-code': elem.original_fias_house_code,
+            'house': elem ? 'None' : null,
+            'fias-house-code': elem['fias-house-code'],
+            'original-fias-house-code': elem['original-fias-house-code'],
             'hm-house-guid': elem["hm-house-guid"],
             'address-string': elem['address-string'],
-            'house-type': elem['house-type'],
-            'house-condition': elem,
-            'house-heating-system-type': elem,
-            'hot-water-supply-system-type': elem,
-            'in-house-engineering-drainage-system': elem,
-            'in-house-engineering-cold-water-supply-system': elem,
-            'in-house-engineering-gas-supply-system': elem,
-            'code': elem,
-            'guid': elem,
-            'value': elem,
+            'house-type': elem['house-type'] ? 'None' : null,
+            'house-condition': elem['house-condition'] ? 'None' : null,
+            'house-heating-system-type': elem['house-heating-system-type'] ? 'None' : null,
+            'hot-water-supply-system-type': elem['hot-water-supply-system-type'] ? 'None' : null,
+            'in-house-engineering-drainage-system': elem['in-house-engineering-drainage-system'] ? 'None' : null,
+            'in-house-engineering-cold-water-supply-system': elem['in-house-engineering-cold-water-supply-system'] ? 'None' : null,
+            'in-house-engineering-gas-supply-system': elem['in-house-engineering-gas-supply-system'] ? 'None' : null,
+        }])
+        Object.keys(elem).forEach((el) => {
+            if (typeof elem[el] === 'object' && !Array.isArray(elem.el) && elem.el !== null) {
+                buffer_nsi_house.push([{
+                    "jkh-house-code": elem['fias-house-code'],
+                    "link_name": el,
+                    "code": elem[el].code,
+                    "guid": elem[el].guid,
+                    "value": elem[el].value,
+                }])
+            }
+        })
+        for (let i = 0; i < elem["communal-rate-consumption"].length; i++) {
+            const tempoElem = elem["communal-rate-consumption"][i];
+            buffer_communal_rate_consumption.push([{
+                "jkh-house-code": elem['fias-house-code'],
+                "communal-rate-consumption": tempoElem ? 'None' : null,
+                "root-rate-guid": tempoElem["root-rate-guid"],
+                "rate-guid": tempoElem["rate-guid"],
+                "name": tempoElem["name"],
+                "date-begin": tempoElem["date-begin"],
+                "date-end": tempoElem["date-end"] || null,
+                "nsi-norm-type": tempoElem["nsi-norm-type"] ? 'None' : null,
+                "nsi-service-type": tempoElem["nsi-service-type"] ? 'None' : null,
+                "nsi-resource-type": tempoElem["nsi-resource-type"] ? 'None' : null,
+                "direction": tempoElem["direction"] || null,
+                "components-count": tempoElem["components-count"],
+                "component-one": tempoElem["component-one"] ? 'None' : null,
+                "component-two": tempoElem["component-two"] ? 'None' : null,
+                "tko-consumer-category": tempoElem["tko-consumer-category"] ? 'None' : null,
+                "objects-category": tempoElem["objects-category"] ? 'None' : null,
+                "territory-oktmo": tempoElem["territory-oktmo"] ? 'None' : null,
+                "diff-criterion-reference-object": tempoElem["diff-criterion-reference-object"] ? 'None' : null,
+                "is-diff-criteria-set": tempoElem["diff-criteria"] ? 'None' : null,  // бесполезное поле
+                "is-diff-criteria-not-set": tempoElem["is-diff-criteria-not-set"] || null,
+                "diff-criteria": tempoElem["diff-criteria"] ? 'None' : null,
+            }])
+            tempoElem["diff-criteria"] ?
+                buffer_communal_rate_criterion.push([{
+                    "root-rate-guid": tempoElem["root-rate-guid"],
+                    "rate-guid": tempoElem["rate-guid"],
+                    "link_name": "diff-criteria",
+                    "diff-criterion-guid": tempoElem["diff-criteria"]["diff-criterion-guid"],
+                    "type": tempoElem["diff-criteria"]["type"],
+                    "operator": tempoElem["diff-criteria"]["operator"],
+                    "source": tempoElem["diff-criteria"]["source"],
+                    "criterion-code": tempoElem["diff-criteria"]["criterion-code"],
+                    "criterion-name": tempoElem["diff-criteria"]["criterion-name"],
+                    "logical-value": tempoElem["diff-criteria"]["logical-value"],
+                    "integer-value-from": tempoElem["diff-criteria"]["integer-value-from"],
+                    "integer-value-to": tempoElem["diff-criteria"]["integer-value-to"],
+                    "real-value-from": tempoElem["diff-criteria"]["real-value-from"],
+                    "other-diff-criterion": tempoElem["diff-criteria"]["other-diff-criterion"] ? 'None' : null,
+                    "diff-criterion-reference-object": tempoElem["diff-criteria"]["diff-criterion-reference-object"],
+                    "reference-code": tempoElem["diff-criteria"]["reference-code"],
+                    "nsi-code": tempoElem["diff-criteria"]["nsi-code"],
+                    "nsi-name": tempoElem["diff-criteria"]["nsi-name"],
+                }]) : null;
+            tempoElem["territory-oktmo"] ?
+                buffer_nsi_communal.push([{ // ЕСЛИ БОЛЬШЕ ОДНОГО КОМПОНЕНТА ТО ЧТО
+                    "jkh-house-code": elem['fias-house-code'],
+                    "link_name": "territory-oktmo",  // ??? 'territory-oktmo'
+                    "code": tempoElem["territory-oktmo"]["code"],  // ???
+                    "guid": tempoElem["nsi-resource-type"]["guid"],  // ???
+                    "value": tempoElem["component-one"]["value"],  // ???
+                }]) : null;
+        }
+
+        buffer_standard.push([{
+            "jkh-house-code": elem['fias-house-code'],
+            "standard": elem.standard ? 'None' : null,
+            "root-standard-guid": elem.standard["root-standard-guid"],
+            "standard-guid": elem.standard["standard-guid"],
+            "date-begin": elem.standard["date-begin"],
+            "date-end": elem.standard["date-end"],
+            "territory-oktmo": elem.standard["territory-oktmo"] ? 'None' : null,
+            "all-categories": elem.standard["all-categories"]["all-categories"],
+            "categories": elem.standard["categories"] ? 'None' : null, // ??
+            "code": elem.standard["territory-oktmo"].code,
+            "name": elem.standard["territory-oktmo"].name,
+            "size": elem.standard["standard-rate"].size,
+            "measure": elem.standard["standard-rate"].measure,
+            "is-diff-criteria-not-set": elem.standard["standard-rate"]["is-diff-criteria-not-set"],
+            "diff-criteria": elem.standard["diff-criteria"] ? 'None' : null, // ???
+        }])
+        buffer_standard_rate.push([{
+            "jkh-house-code": elem['fias-house-code'],
+            "root-standard-guid": elem.standard["root-standard-guid"],
+            "standard-guid": elem.standard["standard-guid"],
+            "code": elem.standard["territory-oktmo"].code,
+            "name": elem.standard["territory-oktmo"].name,
+            "size": elem.standard["standard-rate"].size,
+            "measure": elem.standard["standard-rate"].measure,
+            "is-diff-criteria-not-set": elem.standard["standard-rate"]["is-diff-criteria-not-set"],
+            "diff-criteria": elem.standard["diff-criteria"] ? 'None' : null, // ????
         }])
 
+        for (let i = 0; i < elem["unified-account"].length; i++) {
+            const tempoElem = elem["unified-account"][i];
 
+            buffer_unified_account.push([{
+                "jkh-house-code": elem['fias-house-code'],
+                "unified-account": tempoElem ? 'None' : null,
+                "unified-account-number": tempoElem["unified-account-number"],
+                "object": tempoElem["object"] ? 'None' : null,
+                "premise": tempoElem.object.premise ? 'None' : null,
+                "premise-guid": tempoElem.object.premise["premise-guid"],
+                "category": tempoElem.object.premise["category"] ? 'None' : null,
+                "whole-house": tempoElem, //
+                "room": tempoElem, // ??
+                "room-guid": tempoElem, //
+                "number": tempoElem.object.premise["number"],
+                "accrual": tempoElem.accrual ? 'None' : null,
+                "payment-document": tempoElem.accrual["payment-document"] ? 'None' : null,
+                "service-provider": tempoElem.accrual["payment-document"],
+                "service": tempoElem.accrual["payment-document"],
+            }])
+            for (let j = 0; j < tempoElem.accrual["payment-document"].length; j++) {
 
+                const tempoAccEl = tempoElem.accrual["payment-document"][j]
+                buffer_nsi_unified_account.push([{
+                    "jkh-house-code": elem['fias-house-code'],
+                    "link_name": tempoElem,
+                    "code": elem,
+                    "guid": elem,
+                    "value": elem,
+                }])
 
+                buffer_payment_unified_account.push([{
+                    "jkh-house-code": elem['fias-house-code'],
+                    "payment-document-guid": tempoElem.object.premise,
+                    "payment-document-id": elem,
+                    "payment-document-type": elem,
+                    "payment-document-number": elem,
+                    "service-id": elem,
+                    "account-number": elem,
+                    "account-status": elem,
+                    "period": elem,
+                    "invoice-date": elem,
+                    "total-amount": elem,
+                    "use-total-amount-with-debt-and-advance": elem,
+                    "total-amount-with-debt-and-advance": elem,
+                }])
 
-        buffer_communal_rate_consumption
-        buffer_communal_rate_criterion
-        buffer_nsi_communal
-        buffer_standard
-        buffer_standard_rate
-        buffer_unified_account
-        buffer_nsi_unified_account
-        buffer_payment_unified_account
-        buffer_payment_service
-        buffer_provider_service
+                buffer_payment_service.push([{
+                    "jkh-house-code": elem['fias-house-code'],
+                    "payment-document-guid": elem,
+                    "guid": elem,
+                    "main-municipal-service": elem,
+                    "municipal-resource": elem,
+                    "resource-type": elem,
+                    "service-type": elem,
+                    "charge-type": elem,
+                    "total-amount": elem,
+                    "amount-by-service": elem,
+                    "tariff": elem,
+                    "amount": elem,
+                    "individual-consumption-norm": elem,
+                    "okei": elem,
+                    "code": elem,
+                    "name": elem,
+                    "volume": elem,
+                    "type": elem,
+                    "consumption-measure-type": elem,
+                    "consumption": elem,
+                }])
+
+                buffer_provider_service.push([{
+                    "jkh-house-code": elem['fias-house-code'],
+                    "payment-document-guid": elem,
+                    "receiver-guid": elem,
+                    "provider-name": elem,
+                    "provider-inn": elem,
+                    "provider-kpp": elem,
+                    "amount-by-provider": elem,
+                    "total-amount-debt-advance": elem,
+                    "total-amount-with-debt-and-advance": elem,
+                    "total-amount-with-debt-advance": elem,
+                }])
+
+            }
+        }
 
 
 

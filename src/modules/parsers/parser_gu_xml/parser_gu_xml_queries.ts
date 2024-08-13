@@ -181,7 +181,7 @@ export const bulkInsert = async function (table_name: string, data: Object[], co
         let items = Object.values(item);
         items = items.map((item) => {
             if (typeof item == "string") {
-                return item.replaceAll("'", '"');
+                return item.replaceAll("'", '"').replaceAll("\\", "\\\\");
             }
             return item;
         });
