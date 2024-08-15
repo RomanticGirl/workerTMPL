@@ -25,9 +25,9 @@ connection = pika.BlockingConnection(pika.URLParameters(
     "amqp://admin:gkhadmin@192.168.43.192:5672" 
 ))
 
-# queue_name="prod_data"
-# channel = connection.channel()
-# channel.queue_declare(queue=queue_name, durable=True)
+queue_name="prod_data"
+channel = connection.channel()
+channel.queue_declare(queue=queue_name, durable=True)
 
 def clear_tag(tag):
     prefix_local = re.match("{.*}", tag)
@@ -66,6 +66,7 @@ def create_table(table_name):
         create_query = f"CREATE TABLE {table_name} ("
         create_query += "ExportAccrualsPaymentsPackage character varying(300),"
         create_query += "version character varying(300),"
+        create_query += "file_name character varying(300),"
         create_query += "create_date character varying(300)"
         create_query += ");"
         cursor.execute(create_query)
@@ -243,6 +244,7 @@ def create_table(table_name):
         create_query += "link_name character varying(300),"
         create_query += "code character varying(300),"
         create_query += "guid character varying(300),"
+        create_query += "service_guid character varying(300),"
         create_query += "value character varying(300)"
         create_query += ");"
         cursor.execute(create_query.replace("-", "_"))
@@ -381,7 +383,7 @@ for file in content:
 print(xml_files)
 
 count_print = 0
-i = 7000
+i = 317
 
 for file_name in xml_files:
     tree = ET.parse(file_name)
@@ -389,7 +391,7 @@ for file_name in xml_files:
 
     buffer_PaymentsPackage = [
         {},
-        ["ExportAccrualsPaymentsPackage", "version", "create-date"],
+        ["ExportAccrualsPaymentsPackage", "version", "create-date", "file_name"],
     ]
     buffer_house = [
         {},
@@ -597,6 +599,7 @@ for file_name in xml_files:
     buffer_nsi_unified_account = [
         [
             "jkh-house-code",
+            "service_guid",
             "link_name",
             "code",
             "guid",
@@ -673,9 +676,12 @@ for file_name in xml_files:
     i+=1
     table_name = table_name.replace("-", "_")
     flag_create_table = True
-
+    tempo = False
+    
     for elem in root.iter():
         current_tag = clear_tag(elem.tag)
+        if current_tag == "service":
+            tempo = True
         if current_tag == "ExportAccrualsPaymentsPackage":
             group_tag = current_tag
             buffer_id = ""
@@ -814,6 +820,10 @@ for file_name in xml_files:
                 elif current_tag in buffer_nsi_unified_account[0]:
                     buffer_nsi_row["link_name"] = nsi_tag
                     buffer_nsi_row[current_tag] = elem.text
+                    if current_tag == "guid" and tempo:
+                        buffer_service_row[current_tag] = elem.text
+                        buffer_nsi_row["service_guid"] = elem.text
+                        tempo = False
                 elif current_tag in buffer_payment_service[0]:
                     buffer_service_row["payment-document-guid"] = payment_tag
                     buffer_service_row[current_tag] = elem.text
@@ -831,18 +841,19 @@ for file_name in xml_files:
 
    
     
-
+ 
     if flag_create_table:
         flag_create_table = False
         create_table(table_name)
     if buffer_PaymentsPackage:
-        bulk_insert(table_name, True, buffer_PaymentsPackage, 1000)
+        buffer_PaymentsPackage[2][0]["file_name"] = file_name 
+        bulk_insert(table_name, True, buffer_PaymentsPackage, 500)
         buffer_PaymentsPackage.clear()
     if buffer_house:
-        bulk_insert(table_name + "$HOUSE", True, buffer_house, 1000)        
+        bulk_insert(table_name + "$HOUSE", True, buffer_house, 500)        
         buffer_house.clear()
     if buffer_nsi_house:
-        bulk_insert(table_name + "$NSI_HOUSE", False, buffer_nsi_house, 1000)        
+        bulk_insert(table_name + "$NSI_HOUSE", False, buffer_nsi_house, 500)        
         buffer_nsi_house.clear()
     if buffer_communal_rate_consumption:
         bulk_insert(
@@ -863,24 +874,24 @@ for file_name in xml_files:
         
         buffer_communal_rate_criterion.clear()
     if buffer_nsi_communal:
-        bulk_insert(table_name + "$nsi_communal", False, buffer_nsi_communal, 1000)
+        bulk_insert(table_name + "$nsi_communal", False, buffer_nsi_communal, 500)
         
         buffer_nsi_communal.clear()
     if buffer_standard:
-        bulk_insert(table_name + "$standard", True, buffer_standard, 1000)
+        bulk_insert(table_name + "$standard", True, buffer_standard, 500)
         
         buffer_standard.clear()
     if buffer_standard_rate:
-        bulk_insert(table_name + "$standard_rate", False, buffer_standard_rate, 1000)
+        bulk_insert(table_name + "$standard_rate", False, buffer_standard_rate, 500)
         
         buffer_standard_rate.clear()
     if buffer_unified_account:
-        bulk_insert(table_name + "$unified_account", True, buffer_unified_account, 1000)
+        bulk_insert(table_name + "$unified_account", True, buffer_unified_account, 500)
         
         buffer_unified_account.clear()
     if buffer_nsi_unified_account:
         bulk_insert(
-            table_name + "$nsi_unified_account", False, buffer_nsi_unified_account, 1000
+            table_name + "$nsi_unified_account", False, buffer_nsi_unified_account, 500
         )
         
         buffer_nsi_unified_account.clear()
@@ -895,21 +906,21 @@ for file_name in xml_files:
         buffer_payment_unified_account.clear()
     if buffer_payment_service:
         bulk_insert(
-            table_name + "$payment_service", False, buffer_payment_service, 1000
+            table_name + "$payment_service", False, buffer_payment_service, 500
         )
         
         buffer_payment_service.clear()
     if buffer_provider_service:
         bulk_insert(
-            table_name + "$provider_service", False, buffer_provider_service, 1000
+            table_name + "$provider_service", False, buffer_provider_service, 500
         )
         
 
         buffer_provider_service.clear()
         
-    # channel.basic_publish(exchange='',
-    # routing_key=queue_name,
-    # body='{"table_name": '  + '"' +  table_name + '"}')
+    channel.basic_publish(exchange='',
+    routing_key=queue_name,
+    body='{"table_name": '  + '"' +  table_name + '"}')
 
     f.write('{"table_name": '  + '"' +  table_name + '"} \n')
 

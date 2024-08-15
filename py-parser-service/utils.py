@@ -5,11 +5,11 @@ def connect():
     try:
         # пытаемся подключиться к базе данных
         conn = psycopg2.connect(
-            dbname="parser",
-            user="parser",
-            password="parser",
-            port="5433",
-            host="192.168.43.192",
+            dbname="parser", #"testtest", #
+            user="parser",  #mvpmsp "user", #
+            password="parser", #"0000", #
+            port="5433", #5432", #"
+            host="192.168.43.192", #"localhost" #
         )
         return conn
     except:
